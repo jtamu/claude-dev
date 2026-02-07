@@ -1,0 +1,15 @@
+services:
+  ui:
+    build: .
+    environment:
+      - SSH_AUTH_SOCK=/ssh-agent # コンテナ内でのパス
+    volumes:
+      - claude-workspace:/workspace
+      - ~/.claude/.credentials.json:/root/.claude/.credentials.json:ro
+      - ${SSH_AUTH_SOCK}:/ssh-agent # ホストのソケットをマウント
+      - /var/run/docker.sock:/var/run/docker.sock # ホストのDockerデーモンに接続
+    ports:
+      - 3001
+    restart: unless-stopped
+volumes:
+  claude-workspace:
