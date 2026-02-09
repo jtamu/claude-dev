@@ -3,13 +3,27 @@ services:
     build: .
     environment:
       - SSH_AUTH_SOCK=/ssh-agent # コンテナ内でのパス
+      - DOCKER_HOST=tcp://dind:2375 # DinDサービスに接続
     volumes:
-      - claude-workspace:/workspace
-      - ~/.claude/.credentials.json:/root/.claude/.credentials.json:ro
+      - claude-workspace:/home/dev/workspace
+      - ~/.claude/.credentials.json:/home/dev/.claude/.credentials.json:ro
       - ${SSH_AUTH_SOCK}:/ssh-agent # ホストのソケットをマウント
-      - /var/run/docker.sock:/var/run/docker.sock # ホストのDockerデーモンに接続
     ports:
       - 3001
+    depends_on:
+      - dind
     restart: unless-stopped
+
+  dind:
+    image: docker:dind
+    privileged: true
+    environment:
+      - DOCKER_TLS_CERTDIR= # TLS無効（同一ネットワーク内のため）
+    volumes:
+      - dind-storage:/var/lib/docker
+      - ./dind-daemon.json:/etc/docker/daemon.json:ro
+    restart: unless-stopped
+
 volumes:
   claude-workspace:
+  dind-storage:
