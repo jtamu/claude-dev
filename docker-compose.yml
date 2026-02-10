@@ -24,6 +24,7 @@ services:
     volumes:
       - dind-storage:/var/lib/docker
       - ./dind-daemon.json:/etc/docker/daemon.json:ro
+      - claude-workspace:/home/dev/workspace # UIコンテナと同一パスで共有（ボリュームマウント互換性のため）
     dns:
       - 8.8.8.8
       - 8.8.4.4
