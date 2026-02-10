@@ -13,6 +13,8 @@ services:
     depends_on:
       - dind
     restart: unless-stopped
+    networks:
+      - devnet
 
   dind:
     image: docker:dind
@@ -22,7 +24,20 @@ services:
     volumes:
       - dind-storage:/var/lib/docker
       - ./dind-daemon.json:/etc/docker/daemon.json:ro
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
     restart: unless-stopped
+    networks:
+      - devnet
+
+# DinDデーモン自体のimage pull時の経路はこの外側ネットワークを通る。
+# dind-daemon.json のMTU/DNSは内側コンテナ用であり、外側には効かない。
+networks:
+  devnet:
+    driver: bridge
+    driver_opts:
+      com.docker.network.driver.mtu: "1400"
 
 volumes:
   claude-workspace:
