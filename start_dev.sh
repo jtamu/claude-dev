@@ -1,5 +1,7 @@
 #!/bin/bash
 
-PROJECT_NAME="${1:-claude-dev-1}"
+COUNT="${1:-1}"
 
-docker compose -p $PROJECT_NAME up -d --build
+for i in $(seq 1 "$COUNT"); do
+  docker compose -p "claude-dev-${i}" up -d --build
+done
