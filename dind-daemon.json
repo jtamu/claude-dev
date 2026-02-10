@@ -1,4 +1,9 @@
 {
   "dns": ["8.8.8.8", "8.8.4.4"],
-  "mtu": 1350
+  "mtu": 1350,
+  "default-network-opts": {
+    "bridge": {
+      "com.docker.network.driver.mtu": "1350"
+    }
+  }
 }
