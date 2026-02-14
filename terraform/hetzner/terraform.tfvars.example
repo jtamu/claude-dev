@@ -59,5 +59,4 @@ allowed_app_cidrs = ["0.0.0.0/0"]  # Replace: ["YOUR_IP/32"]
 # Application Configuration
 # -----------------------------------------------------------------------------
 
-git_repo_url            = "https://github.com/your-org/claude-dev.git"
-claude_credentials_file = "~/.claude/.credentials.json"
+git_repo_url = "https://github.com/your-org/claude-dev.git"

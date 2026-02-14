@@ -18,7 +18,6 @@ Hetzner CloudにClaude Dev環境をデプロイします。低コストで高性
 
 1. Hetzner Cloud アカウント
 2. Terraform >= 1.0
-3. Claude認証情報ファイル（`~/.claude/.credentials.json`）
 
 ## セットアップ
 

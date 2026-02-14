@@ -64,20 +64,8 @@ sed -i 's|\$${SSH_AUTH_SOCK}:/ssh-agent|/dev/null:/dev/null:ro|' docker-compose.
 systemctl daemon-reload
 systemctl enable claude-dev
 
-# Build images first
+# Build images and start service (credentials are persisted in Docker volume)
 /usr/bin/docker compose -p claude-dev build
-
-# Credentials setup script
-cat > /opt/claude-dev/setup-credentials.sh << 'SETUP_EOF'
-#!/bin/bash
-if [ -f /root/.claude/.credentials.json ]; then
-  /usr/bin/docker compose -p claude-dev run --rm \
-    -v /root/.claude/.credentials.json:/tmp/creds.json:ro \
-    ui sh -c 'mkdir -p /home/dev/.claude && cp /tmp/creds.json /home/dev/.claude/.credentials.json'
-  echo "Credentials injected into container volume"
-fi
-SETUP_EOF
-chmod +x /opt/claude-dev/setup-credentials.sh
+systemctl start claude-dev
 
 echo "=== Claude Dev setup completed for project: ${project_name} ==="
-echo "Waiting for credentials to be copied via provisioner..."

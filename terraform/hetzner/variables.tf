@@ -107,8 +107,3 @@ variable "git_repo_url" {
   default     = "https://github.com/your-org/claude-dev.git"
 }
 
-variable "claude_credentials_file" {
-  description = "Local path to Claude credentials JSON file"
-  type        = string
-  default     = "~/.claude/.credentials.json"
-}
