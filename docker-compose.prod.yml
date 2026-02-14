@@ -1,0 +1,11 @@
+services:
+  ui:
+    environment:
+      - SSH_AUTH_SOCK=
+    volumes:
+      - claude-workspace:/home/dev/workspace
+      - claude-home:/home/dev/.claude
+      - /dev/null:/dev/null:ro
+      - codex-home:/home/dev/.codex
+    ports:
+      - "3001:3001"

@@ -47,8 +47,8 @@ After=docker.service
 Type=oneshot
 RemainAfterExit=yes
 WorkingDirectory=/opt/claude-dev
-ExecStart=/usr/bin/docker compose -p claude-dev up -d --build
-ExecStop=/usr/bin/docker compose -p claude-dev down
+ExecStart=/usr/bin/docker compose -f docker-compose.yml -f docker-compose.prod.yml -p claude-dev up -d --build
+ExecStop=/usr/bin/docker compose -f docker-compose.yml -f docker-compose.prod.yml -p claude-dev down
 User=root
 Group=docker
 
@@ -56,16 +56,12 @@ Group=docker
 WantedBy=multi-user.target
 EOF
 
-# Fix SSH_AUTH_SOCK for non-SSH environment
-sed -i 's|SSH_AUTH_SOCK=/ssh-agent|SSH_AUTH_SOCK=|' docker-compose.yml
-sed -i 's|\$${SSH_AUTH_SOCK}:/ssh-agent|/dev/null:/dev/null:ro|' docker-compose.yml
-
 # Enable service
 systemctl daemon-reload
 systemctl enable claude-dev
 
 # Build images and start service (credentials are persisted in Docker volume)
-/usr/bin/docker compose -p claude-dev build
+/usr/bin/docker compose -f docker-compose.yml -f docker-compose.prod.yml -p claude-dev build
 systemctl start claude-dev
 
 echo "=== Claude Dev setup completed for project: ${project_name} ==="
