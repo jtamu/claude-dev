@@ -24,7 +24,7 @@ output "monthly_cost_estimate" {
   description = "Estimated monthly cost"
   value = {
     server_type   = var.server_type
-    cost_per_unit = var.server_type == "cx22" ? "€4.35" : var.server_type == "cx11" ? "€3.29" : var.server_type == "cax11" ? "€3.29" : "varies"
+    cost_per_unit = var.server_type == "cx23" ? "€4.35" : var.server_type == "cax11" ? "€3.29" : "varies"
     instances     = length(var.projects)
     total         = "${length(var.projects)} x ${var.server_type}"
   }

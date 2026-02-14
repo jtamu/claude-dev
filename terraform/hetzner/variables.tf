@@ -32,9 +32,9 @@ variable "projects" {
 variable "server_type" {
   description = "Hetzner server type"
   type        = string
-  default     = "cx22"  # 2 vCPU, 4GB RAM, 40GB - €4.35/month
-  # Options: cx11 (€3.29), cx22 (€4.35), cx32 (€7.69), cx42 (€14.49)
-  # ARM options: cax11 (€3.29), cax21 (€5.49), cax31 (€8.99)
+  default     = "cx23"  # 2 vCPU, 4GB RAM, 40GB
+  # Options: cx23 (2c/4GB), cx33 (4c/8GB), cx43 (8c/16GB), cx53 (16c/32GB)
+  # ARM options: cax11 (2c/4GB), cax21 (4c/8GB), cax31 (8c/16GB)
 }
 
 variable "image" {
