@@ -67,7 +67,7 @@ claude "こんにちは"
 
 ### 4. 認証情報とネットワークの確認
 
-- `~/.claude/.credentials.json` が正しくマウントされているか  
+- `claude-home` ボリュームに認証情報が入っているか  
   - `docker compose exec ui cat /home/dev/.claude/.credentials.json` で中身の有無・形式を確認。
 - コンテナから外部への疎通  
   - `docker compose exec ui curl -sI https://api.anthropic.com` で HTTP 応答やタイムアウトを確認。

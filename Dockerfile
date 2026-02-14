@@ -14,13 +14,16 @@ RUN install -m 0755 -d /etc/apt/keyrings \
 # Claude Code CLI
 RUN npm install -g @anthropic-ai/claude-code
 
+# Codex CLI (OpenAI)
+RUN npm install -g @openai/codex
+
 # 非rootユーザー作成とワークスペース（UID/GID 1001: ベースイメージの1000と衝突回避）
-# .claude を事前作成して dev 所有にしないと、credentials.json マウント時に
-# 親ディレクトリが root で作られ project-config.json の書き込みで EACCES になる
+# .claude / .codex はボリュームで永続化するため、ディレクトリのみ事前作成
 RUN groupadd --gid 1001 dev \
     && useradd --uid 1001 --gid 1001 --create-home --shell /bin/bash dev \
-    && mkdir -p /home/dev/workspace /home/dev/.claude \
+    && mkdir -p /home/dev/workspace /home/dev/.claude /home/dev/.codex \
     && chown -R dev:dev /home/dev
+# Codex はサブスクリプション（ChatGPT ログイン）で利用。認証情報は codex-home ボリュームに保持
 WORKDIR /home/dev/workspace
 USER dev
 

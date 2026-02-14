@@ -6,8 +6,11 @@ services:
       - DOCKER_HOST=tcp://dind:2375 # DinDサービスに接続
     volumes:
       - claude-workspace:/home/dev/workspace
-      - ~/.claude/.credentials.json:/home/dev/.claude/.credentials.json:ro
+      # Claude Code 認証情報（初回セットアップ後はボリュームに永続化、README 参照）
+      - claude-home:/home/dev/.claude
       - ${SSH_AUTH_SOCK}:/ssh-agent # ホストのソケットをマウント
+      # Codex サブスクリプション認証（codex login で書き込んだ auth.json を永続化）
+      - codex-home:/home/dev/.codex
     ports:
       - 3001
     depends_on:
@@ -43,3 +46,5 @@ networks:
 volumes:
   claude-workspace:
   dind-storage:
+  claude-home:
+  codex-home:
