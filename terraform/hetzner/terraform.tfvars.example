@@ -36,7 +36,7 @@ projects = [
 #   cax21: 4 vCPU, 8GB RAM,  80GB
 #   cax31: 8 vCPU, 16GB RAM, 160GB
 
-server_type = "cx23"
+server_type = "cx33"
 image       = "ubuntu-24.04"
 
 # -----------------------------------------------------------------------------
