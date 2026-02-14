@@ -10,7 +10,7 @@ hcloud_token = "your-api-token-here"
 # nbg1: Nuremberg, Germany
 # hel1: Helsinki, Finland
 # ash: Ashburn, USA
-location = "fsn1"
+location = "nbg1"
 
 # -----------------------------------------------------------------------------
 # Project Configuration
@@ -26,17 +26,17 @@ projects = [
 # -----------------------------------------------------------------------------
 
 # x86 options (Intel/AMD):
-#   cx11: 1 vCPU, 2GB RAM,  20GB - €3.29/month
-#   cx22: 2 vCPU, 4GB RAM,  40GB - €4.35/month (recommended)
-#   cx32: 4 vCPU, 8GB RAM,  80GB - €7.69/month
-#   cx42: 8 vCPU, 16GB RAM, 160GB - €14.49/month
+#   cx23: 2 vCPU, 4GB RAM,  40GB (recommended)
+#   cx33: 4 vCPU, 8GB RAM,  80GB
+#   cx43: 8 vCPU, 16GB RAM, 160GB
+#   cx53: 16 vCPU, 32GB RAM, 320GB
 #
 # ARM options (Ampere):
-#   cax11: 2 vCPU, 4GB RAM,  40GB - €3.29/month
-#   cax21: 4 vCPU, 8GB RAM,  80GB - €5.49/month
-#   cax31: 8 vCPU, 16GB RAM, 160GB - €8.99/month
+#   cax11: 2 vCPU, 4GB RAM,  40GB
+#   cax21: 4 vCPU, 8GB RAM,  80GB
+#   cax31: 8 vCPU, 16GB RAM, 160GB
 
-server_type = "cx22"
+server_type = "cx23"
 image       = "ubuntu-24.04"
 
 # -----------------------------------------------------------------------------
