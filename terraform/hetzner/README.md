@@ -89,7 +89,25 @@ monthly_cost_estimate = {
   instances     = 1
   total         = "1 x cx22"
 }
+
+ui_ssh_public_key_instructions = {
+  "my-project" = "SSH to the server, then run: docker compose -f /opt/claude-dev/docker-compose.yml -f /opt/claude-dev/docker-compose.prod.yml -p claude-dev logs ui 2>&1 | head -20"
+}
 ```
+
+### UIコンテナでの Git 操作（SSH）
+
+UIコンテナ内では起動時に SSH 鍵（ed25519）が自動生成され、公開鍵がログに出力されます。コンテナ内で `git clone`（SSH）等を行うには:
+
+1. サーバーに SSH して UI コンテナのログを確認:
+   ```bash
+   ssh -i ~/.ssh/hetzner_claude_dev root@<サーバーIP>
+   docker compose -f /opt/claude-dev/docker-compose.yml -f /opt/claude-dev/docker-compose.prod.yml -p claude-dev logs ui 2>&1 | head -20
+   ```
+2. 表示された公開鍵（`ssh-ed25519 ...`）を GitHub / GitLab 等の **Deploy key** または SSH 鍵設定に追加
+3. 以降、UI のワークスペース内で `git clone git@github.com:...` 等が利用可能
+
+鍵は `claude-ssh` ボリュームに永続化されるため、コンテナ再起動後も同じ鍵が使われます。
 
 ## ロケーション
 

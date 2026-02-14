@@ -1,5 +1,6 @@
 services:
   ui:
+    image: claude-dev-ui:local  # Dockerfile.prod の FROM で参照するため固定
     build: .
     environment:
       - SSH_AUTH_SOCK=/ssh-agent # コンテナ内でのパス

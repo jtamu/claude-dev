@@ -87,11 +87,11 @@ resource "hcloud_firewall" "main" {
 resource "hcloud_server" "claude_dev" {
   for_each = toset(var.projects)
 
-  name        = "claude-dev-${each.key}"
-  server_type = var.server_type
-  image       = var.image
-  location    = var.location
-  ssh_keys    = [hcloud_ssh_key.main.id]
+  name         = "claude-dev-${each.key}"
+  server_type  = var.server_type
+  image        = var.image
+  location     = var.location
+  ssh_keys     = [hcloud_ssh_key.main.id]
   firewall_ids = [hcloud_firewall.main.id]
 
   user_data = templatefile("${path.module}/user_data.sh.tpl", {

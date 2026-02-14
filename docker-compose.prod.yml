@@ -1,6 +1,15 @@
+# 本番用: Dockerfile.prod でビルド（SSH鍵生成エントリポイント付き）、.ssh ボリュームをマウント
 services:
   ui:
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
     environment:
       - SSH_AUTH_SOCK=
+    volumes:
+      - claude-ssh:/home/dev/.ssh
     ports:
       - "3001:3001"
+
+volumes:
+  claude-ssh:

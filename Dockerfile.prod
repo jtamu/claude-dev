@@ -1,0 +1,18 @@
+# 本番用: Dockerfile でビルドしたイメージの上に SSH 鍵生成の差分だけ載せる
+# 事前に docker compose build ui で claude-dev-ui:local を作成しておくこと（Hetzner user_data では二段階ビルドで対応）
+FROM claude-dev-ui:local
+
+USER root
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends openssh-client \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN mkdir -p /home/dev/.ssh && chown dev:dev /home/dev/.ssh
+
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh && chown dev:dev /entrypoint.sh
+
+USER dev
+
+ENTRYPOINT ["/entrypoint.sh", "npx", "@siteboon/claude-code-ui@1.16.3"]

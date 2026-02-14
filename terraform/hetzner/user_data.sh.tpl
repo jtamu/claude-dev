@@ -63,7 +63,8 @@ echo 'SSH_AUTH_SOCK=/dev/null' > "$APP_DIR/.env"
 systemctl daemon-reload
 systemctl enable claude-dev
 
-# Build images and start service (credentials are persisted in Docker volume)
+# Build: まずベースイメージ (Dockerfile) をビルドし、続けて本番用 (Dockerfile.prod) をビルド
+/usr/bin/docker compose -f docker-compose.yml -p claude-dev build ui
 /usr/bin/docker compose -f docker-compose.yml -f docker-compose.prod.yml -p claude-dev build
 systemctl start claude-dev
 

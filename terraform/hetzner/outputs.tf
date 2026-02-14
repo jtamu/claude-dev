@@ -20,6 +20,14 @@ output "ssh_commands" {
   }
 }
 
+output "ui_ssh_public_key_instructions" {
+  description = "How to get the UI container's SSH public key (for git clone in the container)"
+  value = {
+    for project, server in hcloud_server.claude_dev : project =>
+    "SSH to the server, then run: docker compose -f /opt/claude-dev/docker-compose.yml -f /opt/claude-dev/docker-compose.prod.yml -p claude-dev logs ui 2>&1 | head -20"
+  }
+}
+
 output "monthly_cost_estimate" {
   description = "Estimated monthly cost"
   value = {
