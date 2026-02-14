@@ -1,0 +1,63 @@
+# -----------------------------------------------------------------------------
+# Hetzner Cloud Configuration
+# Get API token from: Hetzner Cloud Console > Project > Security > API Tokens
+# -----------------------------------------------------------------------------
+
+hcloud_token = "your-api-token-here"
+
+# Location (datacenter)
+# fsn1: Falkenstein, Germany (cheapest)
+# nbg1: Nuremberg, Germany
+# hel1: Helsinki, Finland
+# ash: Ashburn, USA
+location = "fsn1"
+
+# -----------------------------------------------------------------------------
+# Project Configuration
+# -----------------------------------------------------------------------------
+
+projects = [
+  "project-alpha",
+  "project-beta",
+]
+
+# -----------------------------------------------------------------------------
+# Server Configuration
+# -----------------------------------------------------------------------------
+
+# x86 options (Intel/AMD):
+#   cx11: 1 vCPU, 2GB RAM,  20GB - €3.29/month
+#   cx22: 2 vCPU, 4GB RAM,  40GB - €4.35/month (recommended)
+#   cx32: 4 vCPU, 8GB RAM,  80GB - €7.69/month
+#   cx42: 8 vCPU, 16GB RAM, 160GB - €14.49/month
+#
+# ARM options (Ampere):
+#   cax11: 2 vCPU, 4GB RAM,  40GB - €3.29/month
+#   cax21: 4 vCPU, 8GB RAM,  80GB - €5.49/month
+#   cax31: 8 vCPU, 16GB RAM, 160GB - €8.99/month
+
+server_type = "cx22"
+image       = "ubuntu-24.04"
+
+# -----------------------------------------------------------------------------
+# SSH Configuration
+# -----------------------------------------------------------------------------
+
+ssh_public_key_path  = "~/.ssh/id_rsa.pub"
+ssh_private_key_path = "~/.ssh/id_rsa"
+ssh_key_name         = "claude-dev"
+
+# -----------------------------------------------------------------------------
+# Firewall Configuration
+# Recommended: restrict to your IP
+# -----------------------------------------------------------------------------
+
+allowed_ssh_cidrs = ["0.0.0.0/0"]  # Replace: ["YOUR_IP/32"]
+allowed_app_cidrs = ["0.0.0.0/0"]  # Replace: ["YOUR_IP/32"]
+
+# -----------------------------------------------------------------------------
+# Application Configuration
+# -----------------------------------------------------------------------------
+
+git_repo_url            = "https://github.com/your-org/claude-dev.git"
+claude_credentials_file = "~/.claude/.credentials.json"

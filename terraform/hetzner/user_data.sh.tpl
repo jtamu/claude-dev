@@ -1,0 +1,83 @@
+#!/bin/bash
+set -euxo pipefail
+
+# Logging
+exec > >(tee /var/log/user-data.log) 2>&1
+
+echo "=== Starting Claude Dev setup for project: ${project_name} ==="
+
+# Update system
+apt-get update
+apt-get upgrade -y
+
+# Install Docker
+apt-get install -y ca-certificates curl gnupg
+install -m 0755 -d /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+chmod a+r /etc/apt/keyrings/docker.gpg
+
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+  $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+  tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+apt-get update
+apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin git
+
+# Enable and start Docker
+systemctl enable docker
+systemctl start docker
+
+# Create app directory
+APP_DIR="/opt/claude-dev"
+mkdir -p "$APP_DIR"
+cd "$APP_DIR"
+
+# Clone repository
+git clone ${git_repo_url} .
+
+# Create systemd service
+cat > /etc/systemd/system/claude-dev.service << 'EOF'
+[Unit]
+Description=Claude Dev Docker Compose
+Requires=docker.service
+After=docker.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+WorkingDirectory=/opt/claude-dev
+ExecStart=/usr/bin/docker compose -p claude-dev up -d --build
+ExecStop=/usr/bin/docker compose -p claude-dev down
+User=root
+Group=docker
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+# Fix SSH_AUTH_SOCK for non-SSH environment
+sed -i 's|SSH_AUTH_SOCK=/ssh-agent|SSH_AUTH_SOCK=|' docker-compose.yml
+sed -i 's|\$${SSH_AUTH_SOCK}:/ssh-agent|/dev/null:/dev/null:ro|' docker-compose.yml
+
+# Enable service
+systemctl daemon-reload
+systemctl enable claude-dev
+
+# Build images first
+/usr/bin/docker compose -p claude-dev build
+
+# Credentials setup script
+cat > /opt/claude-dev/setup-credentials.sh << 'SETUP_EOF'
+#!/bin/bash
+if [ -f /root/.claude/.credentials.json ]; then
+  /usr/bin/docker compose -p claude-dev run --rm \
+    -v /root/.claude/.credentials.json:/tmp/creds.json:ro \
+    ui sh -c 'mkdir -p /home/dev/.claude && cp /tmp/creds.json /home/dev/.claude/.credentials.json'
+  echo "Credentials injected into container volume"
+fi
+SETUP_EOF
+chmod +x /opt/claude-dev/setup-credentials.sh
+
+echo "=== Claude Dev setup completed for project: ${project_name} ==="
+echo "Waiting for credentials to be copied via provisioner..."
