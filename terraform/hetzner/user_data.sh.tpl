@@ -56,6 +56,9 @@ Group=docker
 WantedBy=multi-user.target
 EOF
 
+# Create .env for docker-compose variable substitution (SSH_AUTH_SOCK is host-side)
+echo 'SSH_AUTH_SOCK=/dev/null' > "$APP_DIR/.env"
+
 # Enable service
 systemctl daemon-reload
 systemctl enable claude-dev
