@@ -8,8 +8,10 @@ services:
       - SSH_AUTH_SOCK=
     volumes:
       - claude-ssh:/home/dev/.ssh
+      - codex-home:/home/dev/.codex
     ports:
       - "3001:3001"
 
 volumes:
   claude-ssh:
+  codex-home:
