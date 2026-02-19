@@ -26,6 +26,10 @@ RUN npm install -g @anthropic-ai/claude-code
 # Codex CLI (OpenAI)
 RUN npm install -g @openai/codex
 
+# Playwright ブラウザ用システム依存ライブラリ（rootの段階でインストール）
+RUN npx -y playwright install-deps chromium \
+    && rm -rf /var/lib/apt/lists/*
+
 # 非rootユーザー作成とワークスペース（UID/GID 1001: ベースイメージの1000と衝突回避）
 # .claude / .codex はボリュームで永続化するため、ディレクトリのみ事前作成
 RUN groupadd --gid 1001 dev \
@@ -36,8 +40,9 @@ RUN groupadd --gid 1001 dev \
 WORKDIR /home/dev/workspace
 USER dev
 
-# プロジェクト固有の言語ランタイム（例: Python, Go など）
-# RUN apt-get install -y python3 python3-pip ...
+# Playwright Chromium ブラウザをdevユーザーでプリインストール
+RUN npx -y @playwright/mcp@latest --help > /dev/null 2>&1 \
+    && npx -y playwright install chromium
 
 # エントリポイントスクリプト（後述）
 #COPY entrypoint.sh /entrypoint.sh
