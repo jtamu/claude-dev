@@ -9,6 +9,9 @@ services:
     volumes:
       - claude-ssh:/home/dev/.ssh
       - codex-home:/home/dev/.codex
+
+  # UIがdindのネットワークを共有するため、ポートはdind側で定義
+  dind:
     ports:
       - "3001:3001"
 

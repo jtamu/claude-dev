@@ -2,9 +2,10 @@ services:
   ui:
     image: claude-dev-ui:local  # Dockerfile.prod の FROM で参照するため固定
     build: .
+    network_mode: "service:dind" # DinDとネットワーク名前空間を共有（DinD内コンテナにlocalhostでアクセス可能）
     environment:
       - SSH_AUTH_SOCK=/ssh-agent # コンテナ内でのパス
-      - DOCKER_HOST=tcp://dind:2375 # DinDサービスに接続
+      - DOCKER_HOST=tcp://localhost:2375 # 同一ネットワーク名前空間なのでlocalhost
     volumes:
       - claude-workspace:/home/dev/workspace
       # Claude Code 認証情報（初回セットアップ後はボリュームに永続化、README 参照）
@@ -12,23 +13,22 @@ services:
       - ${SSH_AUTH_SOCK}:/ssh-agent # ホストのソケットをマウント
       # Codex サブスクリプション認証（codex login で書き込んだ auth.json を永続化）
       - codex-home:/home/dev/.codex
-    ports:
-      - 3001
+    # ports/networks は dind と共有（network_mode: service）のため dind 側で定義
     depends_on:
       - dind
     restart: unless-stopped
-    networks:
-      - devnet
 
   dind:
     image: docker:dind
     privileged: true
     environment:
-      - DOCKER_TLS_CERTDIR= # TLS無効（同一ネットワーク内のため）
+      - DOCKER_TLS_CERTDIR= # TLS無効（同一ネットワーク名前空間内のため）
     volumes:
       - dind-storage:/var/lib/docker
       - ./dind-daemon.json:/etc/docker/daemon.json:ro
       - claude-workspace:/home/dev/workspace # UIコンテナと同一パスで共有（ボリュームマウント互換性のため）
+    ports:
+      - 3001 # UI port（UIがdindのネットワークを共有するため、ここで公開）
     dns:
       - 8.8.8.8
       - 8.8.4.4
