@@ -80,11 +80,10 @@ systemctl enable claude-dev
 /usr/bin/docker compose -f docker-compose.yml -p claude-dev build ui
 /usr/bin/docker compose -f docker-compose.yml -f docker-compose.prod.yml -p claude-dev build
 
-# アプリ起動（nginx以外 — 証明書取得前なので）
+# アプリ起動（nginx以外 — init-ssl.sh内で証明書取得後に起動される）
 systemctl start claude-dev
 
-# SSL証明書の初期化
-chmod +x "$APP_DIR/init-ssl.sh"
+# SSL証明書の初期化（standaloneモードで取得後、nginxを起動）
 "$APP_DIR/init-ssl.sh" "${domain}" "${certbot_email}"
 
 # Certbot自動更新用systemdタイマー
