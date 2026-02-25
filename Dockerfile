@@ -1,6 +1,6 @@
 FROM node:20-bookworm
 
-RUN apt update && apt install -y vim curl
+RUN apt update && apt install -y vim curl tini
 
 # Docker Compose Plugin (公式リポジトリ経由)
 RUN install -m 0755 -d /etc/apt/keyrings \
@@ -52,5 +52,6 @@ RUN npx -y @playwright/mcp@latest --help > /dev/null 2>&1 \
 
 EXPOSE 3001
 
+# tini: PID 1 として孤児プロセス(Playwright Chromium等)を適切にreapし、ゾンビ蓄積を防止
 # レスポンスが返らない不具合の緩和のためバージョン固定（issue #336, #245 等）
-ENTRYPOINT ["npx", "@siteboon/claude-code-ui@1.16.3"]
+ENTRYPOINT ["tini", "--", "npx", "@siteboon/claude-code-ui@1.16.3"]

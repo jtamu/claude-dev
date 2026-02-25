@@ -15,4 +15,5 @@ RUN chmod +x /entrypoint.sh && chown dev:dev /entrypoint.sh
 
 USER dev
 
-ENTRYPOINT ["/entrypoint.sh", "npx", "@siteboon/claude-code-ui@1.16.3"]
+# tini: PID 1 として孤児プロセス(Playwright Chromium等)を適切にreapし、ゾンビ蓄積を防止
+ENTRYPOINT ["tini", "--", "/entrypoint.sh", "npx", "@siteboon/claude-code-ui@1.16.3"]
