@@ -1,6 +1,10 @@
 {
   "dns": ["8.8.8.8", "8.8.4.4"],
   "mtu": 1350,
+  "bip": "10.255.0.1/24",
+  "default-address-pools": [
+    { "base": "10.10.0.0/16", "size": 24 }
+  ],
   "default-network-opts": {
     "bridge": {
       "com.docker.network.driver.mtu": "1350"
