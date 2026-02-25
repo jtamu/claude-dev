@@ -7,7 +7,7 @@ output "servers" {
       ipv6        = server.ipv6_address
       server_type = server.server_type
       location    = server.location
-      webui_url   = "http://${server.ipv4_address}:3001"
+      webui_url   = "https://${project}.${var.domain}"
     }
   }
 }

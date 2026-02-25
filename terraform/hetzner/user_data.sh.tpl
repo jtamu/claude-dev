@@ -66,8 +66,11 @@ Group=docker
 WantedBy=multi-user.target
 EOF
 
-# Create .env for docker-compose variable substitution (SSH_AUTH_SOCK is host-side)
-echo 'SSH_AUTH_SOCK=/dev/null' > "$APP_DIR/.env"
+# Create .env for docker-compose variable substitution
+cat > "$APP_DIR/.env" << ENVEOF
+SSH_AUTH_SOCK=/dev/null
+DOMAIN=${domain}
+ENVEOF
 
 # Enable service
 systemctl daemon-reload
@@ -76,6 +79,44 @@ systemctl enable claude-dev
 # Build: まずベースイメージ (Dockerfile) をビルドし、続けて本番用 (Dockerfile.prod) をビルド
 /usr/bin/docker compose -f docker-compose.yml -p claude-dev build ui
 /usr/bin/docker compose -f docker-compose.yml -f docker-compose.prod.yml -p claude-dev build
+
+# アプリ起動（nginx以外 — 証明書取得前なので）
 systemctl start claude-dev
 
+# SSL証明書の初期化
+chmod +x "$APP_DIR/init-ssl.sh"
+"$APP_DIR/init-ssl.sh" "${domain}" "${certbot_email}"
+
+# Certbot自動更新用systemdタイマー
+cat > /etc/systemd/system/certbot-renew.service << 'CERTEOF'
+[Unit]
+Description=Certbot certificate renewal
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/docker run --rm \
+  -v /opt/claude-dev/letsencrypt:/etc/letsencrypt \
+  -v /opt/claude-dev/certbot-webroot:/var/www/certbot \
+  certbot/certbot renew
+ExecStartPost=/usr/bin/docker compose -f /opt/claude-dev/docker-compose.yml -f /opt/claude-dev/docker-compose.prod.yml -p claude-dev exec -T nginx nginx -s reload
+CERTEOF
+
+cat > /etc/systemd/system/certbot-renew.timer << 'TIMEREOF'
+[Unit]
+Description=Certbot renewal timer (twice daily)
+
+[Timer]
+OnCalendar=*-*-* 03:00:00
+OnCalendar=*-*-* 15:00:00
+RandomizedDelaySec=3600
+
+[Install]
+WantedBy=timers.target
+TIMEREOF
+
+systemctl daemon-reload
+systemctl enable certbot-renew.timer
+systemctl start certbot-renew.timer
+
 echo "=== Claude Dev setup completed for project: ${project_name} ==="
+echo "=== Access: https://${domain} ==="

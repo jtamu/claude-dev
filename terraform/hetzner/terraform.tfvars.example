@@ -60,3 +60,15 @@ allowed_app_cidrs = ["0.0.0.0/0"]  # Replace: ["YOUR_IP/32"]
 # -----------------------------------------------------------------------------
 
 git_repo_url = "https://github.com/your-org/claude-dev.git"
+
+# -----------------------------------------------------------------------------
+# Cloudflare Configuration (SSL/DNS)
+# Create API token at: https://dash.cloudflare.com/profile/api-tokens
+# Required permission: Zone > DNS > Edit
+# Zone ID: Cloudflare Dashboard > domain > Overview (right sidebar)
+# -----------------------------------------------------------------------------
+
+cloudflare_api_token = "your-cloudflare-api-token-here"
+cloudflare_zone_id   = "your-zone-id-here"
+domain               = "example.com"
+certbot_email        = "admin@example.com"

@@ -15,6 +15,24 @@ services:
     ports:
       - "3001:3001"
 
+  # SSL終端リバースプロキシ
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      - DOMAIN=${DOMAIN}
+    volumes:
+      - ./nginx/default.conf.template:/etc/nginx/templates/default.conf.template:ro
+      - ./letsencrypt:/etc/letsencrypt:ro
+      - ./certbot-webroot:/var/www/certbot:ro
+    networks:
+      - devnet
+    depends_on:
+      - dind
+    restart: unless-stopped
+
 volumes:
   claude-ssh:
   codex-home:

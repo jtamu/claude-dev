@@ -8,6 +8,31 @@ variable "hcloud_token" {
   sensitive   = true
 }
 
+# -----------------------------------------------------------------------------
+# Cloudflare Configuration
+# -----------------------------------------------------------------------------
+
+variable "cloudflare_api_token" {
+  description = "Cloudflare API token (Zone:DNS:Edit permission)"
+  type        = string
+  sensitive   = true
+}
+
+variable "cloudflare_zone_id" {
+  description = "Cloudflare Zone ID for the domain"
+  type        = string
+}
+
+variable "domain" {
+  description = "Base domain name (e.g. example.com). Subdomains are created as {project}.{domain}"
+  type        = string
+}
+
+variable "certbot_email" {
+  description = "Email address for Let's Encrypt certificate notifications"
+  type        = string
+}
+
 variable "location" {
   description = "Hetzner datacenter location"
   type        = string
@@ -92,7 +117,7 @@ variable "allowed_ssh_cidrs" {
 }
 
 variable "allowed_app_cidrs" {
-  description = "CIDR blocks allowed to access the app (port 3001)"
+  description = "CIDR blocks allowed to access the app (HTTPS port 443)"
   type        = list(string)
   default     = ["0.0.0.0/0"]
 }
