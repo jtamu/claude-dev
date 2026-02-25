@@ -28,6 +28,16 @@ apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin do
 systemctl enable docker
 systemctl start docker
 
+# Setup swap (4GB) — Playwright Chromium等のメモリ消費に備える
+if [ ! -f /swapfile ]; then
+  fallocate -l 4G /swapfile
+  chmod 600 /swapfile
+  mkswap /swapfile
+  swapon /swapfile
+  echo '/swapfile none swap sw 0 0' >> /etc/fstab
+  echo "=== Swap enabled (4GB) ==="
+fi
+
 # Create app directory
 APP_DIR="/opt/claude-dev"
 mkdir -p "$APP_DIR"
