@@ -54,4 +54,4 @@ EXPOSE 3001
 
 # tini: PID 1 として孤児プロセス(Playwright Chromium等)を適切にreapし、ゾンビ蓄積を防止
 # レスポンスが返らない不具合の緩和のためバージョン固定（issue #336, #245 等）
-ENTRYPOINT ["tini", "--", "npx", "@siteboon/claude-code-ui@1.16.3"]
+ENTRYPOINT ["tini", "--", "npx", "@siteboon/claude-code-ui@latest"]
